@@ -1,6 +1,6 @@
 #include "fft.h"
 
-// Fourier transform using a discrete integration
+// Discrete integration
 double FFT::integral (double (*fn) (double), double start, double end, double dt)
 {
     double s = 0.f;

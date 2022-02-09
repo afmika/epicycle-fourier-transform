@@ -26,13 +26,6 @@ int main (int argc, char** argv) {
     std::vector<Complex> samples = FFT::loadSamplesFromFile (file);
     std::vector<Phasor> phasors = FFT::dft (samples, false);
 
-    std::cout << phasors.size() << '\n';
-    std::cout << phasors[0] << '\n';
-    std::cout << phasors[phasors.size() - 1] << '\n';
-
-    if (1)
-        return 0;
-
     // init SDL Video
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
