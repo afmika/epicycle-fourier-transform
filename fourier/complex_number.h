@@ -7,13 +7,20 @@
 struct Polar {
     double amplitude;
     double angle;
-    Polar (double amp, double ang) : amplitude(amp), angle(ang)
-    {
-        amplitude = amp; angle = ang;
-    }
-
+    Polar (double amp, double ang);
+    Polar ();
     std::string str () const;
     friend std::ostream& operator<<(std::ostream& os, const Polar& polar);
+};
+
+
+struct Phasor {
+    Polar polar_data;
+    double freq;
+    Phasor (Polar polar, double fr);
+    Phasor ();
+    std::string str () const;
+    friend std::ostream& operator<<(std::ostream& os, const Phasor& phasor);
 };
 
 class Complex {
@@ -33,6 +40,7 @@ class Complex {
         Complex operator * (Complex other);
         Complex operator * (double k);
         Complex operator / (Complex other);
+        Complex operator / (double k);
 
         std::string str () const;
         friend std::ostream& operator<<(std::ostream& os, const Complex& obj);

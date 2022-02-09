@@ -6,7 +6,7 @@ COMPILER_FLAGS = -w
 
 OTHER_FILES = ./fourier/*.cpp
 
-TEST_FILE = ./sandbox/integral.cpp
+TEST_FILE = ./sandbox/dft.cpp
 TEST_RESULT = bin/test
 
 define compile_all

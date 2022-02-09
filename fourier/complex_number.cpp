@@ -63,6 +63,11 @@ Complex Complex::operator / (Complex other)
     return Complex (polarDiv);
 }
 
+Complex Complex::operator / (double n)
+{
+    return {x / n, y / n};
+}
+
 std::string Complex::str () const
 {
     char str[50];
@@ -88,6 +93,15 @@ std::ostream& operator<<(std::ostream& os, const Complex& obj)
 }
 
 // polar form
+Polar::Polar (double amp, double ang) : amplitude(amp), angle(ang)
+{
+    amplitude = amp; angle = ang;
+}
+
+Polar::Polar ()
+{
+}
+
 std::string Polar::str () const
 {
     char str[50];
@@ -98,5 +112,28 @@ std::string Polar::str () const
 std::ostream& operator<<(std::ostream& os, const Polar& polar)
 {
     os << polar.str ();
+    return os;
+}
+
+// phasor
+Phasor::Phasor (Polar polar, double fr) : polar_data (polar), freq (fr)
+{
+    polar_data = polar; freq = fr;
+}
+
+Phasor::Phasor ()
+{
+}
+
+std::string Phasor::str () const
+{
+    char str[50];
+    sprintf (str, "[amp=%f, angle=%f, freq=%f]", polar_data.amplitude, polar_data.angle, freq);
+    return str;
+}
+
+std::ostream& operator<<(std::ostream& os, const Phasor& phasor)
+{
+    os << phasor.str ();
     return os;
 }
