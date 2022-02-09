@@ -9,6 +9,9 @@ OTHER_FILES = ./fourier/*.cpp
 TEST_FILE = ./sandbox/dft.cpp
 TEST_RESULT = bin/test
 
+MAIN_FILE = ./main.cpp
+MAIN_RESULT = bin/app
+
 define compile_all
 	echo $(3)
 	g++ $(1) ${OTHER_FILES} ${INCLUDE_PATHS} ${LIBRARY_PATHS} ${COMPILER_FLAGS} ${LINKER_FLAGS} -o $(2)
@@ -17,3 +20,7 @@ endef
 test:
 	$(call compile_all,  ${TEST_FILE}, ${TEST_RESULT}, "Building tests...")
 	$(TEST_RESULT)
+
+build:
+	$(call compile_all,  ${MAIN_FILE}, ${MAIN_RESULT}, "Building...")
+	$(MAIN_RESULT)

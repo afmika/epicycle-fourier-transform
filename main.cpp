@@ -4,28 +4,34 @@ and may not be redistributed without written permission.*/
 //Using SDL and standard IO
 #include "SDL.h"
 #include <iostream>
+#include <vector>
 
-using namespace std;
+#include "fourier/complex_number.h"
+#include "fourier/fft.h"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 
-SDL_Rect rect = {5, 5, 100, 100};
-int dx = 1, dy = 1;
-
-void doStuff (SDL_Renderer* renderer) {
+void drawAll (SDL_Renderer* renderer, std::vector<Phasor> &phasors) {
     SDL_SetRenderDrawColor (renderer, 0, 0, 0, 255);
-    SDL_RenderFillRect (renderer, &rect);
-    if (rect.x <= 0 || rect.x + rect.w > SCREEN_WIDTH) dx *= -1;
-    if (rect.y <= 0 || rect.y + rect.h > SCREEN_HEIGHT) dy *= -1;
-    rect.x += dx;
-    rect.y += dy;
+
 }
 
 int main (int argc, char** argv) {
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
+
+    std::string file = "./datas/pansy-datas.txt";
+    std::vector<Complex> samples = FFT::loadSamplesFromFile (file);
+    std::vector<Phasor> phasors = FFT::dft (samples, false);
+
+    std::cout << phasors.size() << '\n';
+    std::cout << phasors[0] << '\n';
+    std::cout << phasors[phasors.size() - 1] << '\n';
+
+    if (1)
+        return 0;
 
     // init SDL Video
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -53,7 +59,7 @@ int main (int argc, char** argv) {
         SDL_RenderClear (renderer); // clear the entire screen with our selected color
 
         ////////////////////
-        doStuff (renderer);
+        drawAll (renderer, phasors);
         ///////////////////
         
         // renders the prepared 'drawing buffer'

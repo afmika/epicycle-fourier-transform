@@ -16,11 +16,7 @@ std::vector<Complex> testSample () {
 
 int main () {
     std::vector<Complex> list = testSample ();
-    std::vector<Phasor> result = FFT::dft (list);
-
-    std::sort (result.begin (), result.end(), [&] (auto a, auto b) {
-        return a.polar_data.amplitude < b.polar_data.amplitude;
-    });
+    std::vector<Phasor> result = FFT::dft (list, true);
 
     for (auto &phasor : result) {
         Polar p = phasor.polar_data;

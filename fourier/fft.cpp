@@ -9,13 +9,14 @@ double FFT::integral (double (*fn) (double), double start, double end, double dt
 }
 
 // Discrete fourier transform the usual way
-std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples)
+std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples, bool do_sort = false)
 {
     double N = func_samples.size();
     std::vector<Phasor> phasors ((size_t) N);
     // Cn = Sum [k = 1 .. N] {f[k] * exp(-i 2pi n k / N)}
-    Complex Cn = 0.;
+    Complex Cn;
     for (int n = 0; n < N; n++) {
+        Cn = 0; // reset previous
         for (int k = 0; k < N; k++) {
             double pchunk = ((double) n) * ((double) k) / ((double) N);
             // 1 * exp (-i 2pi n k / N)
@@ -24,7 +25,7 @@ std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples)
                 -2 * PI * pchunk
             });
             // updating the sum
-            Cn = Cn + func_samples[n] * tempZ;
+            Cn = Cn + func_samples[k] * tempZ;
         }
         Cn = Cn / N;
         phasors[n] = {
@@ -32,6 +33,28 @@ std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples)
             (double) n      // frequency 
         };
     }
+    
+    if (do_sort) {
+        std::sort (phasors.begin(), phasors.end(), [&] (auto a, auto b) {
+            return a.polar_data.amplitude < b.polar_data.amplitude;
+        });
+    }
 
     return phasors;
+}
+
+
+std::vector<Complex> FFT::loadSamplesFromFile (std::string filename)
+{
+    std::fstream file (filename, std::ios::in);
+    int n = 0;
+    file >> n;
+    std::vector<Complex> samples (n);
+    for (int i = 0; i < n; i++) {
+        double x, y;
+        file >> x >> y;
+        samples[i] = {x, y};
+    }
+    file.close ();
+    return samples;
 }
