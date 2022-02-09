@@ -1,4 +1,4 @@
 #pragma once
 
-#define PI 3.1415
-#define EPS 0.0000000001 
+#define PI  3.141592653f
+#define EPS 0.000000001f
