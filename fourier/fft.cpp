@@ -9,7 +9,7 @@ double FFT::integral (double (*fn) (double), double start, double end, double dt
 }
 
 // Discrete fourier transform the usual way
-std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples, bool do_sort = false)
+std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples, bool do_sort)
 {
     double N = func_samples.size();
     std::vector<Phasor> phasors ((size_t) N);

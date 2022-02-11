@@ -125,6 +125,14 @@ Phasor::Phasor ()
 {
 }
 
+Polar Phasor::stateAt (double time)
+{
+    return {
+        polar_data.amplitude,
+        time * freq + polar_data.angle
+    };
+}
+
 std::string Phasor::str () const
 {
     char str[50];

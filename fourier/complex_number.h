@@ -19,6 +19,7 @@ struct Phasor {
     double freq;
     Phasor (Polar polar, double fr);
     Phasor ();
+    Polar stateAt (double time);
     std::string str () const;
     friend std::ostream& operator<<(std::ostream& os, const Phasor& phasor);
 };
