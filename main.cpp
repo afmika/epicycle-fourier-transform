@@ -95,7 +95,7 @@ int main (int argc, char** argv) {
         if (time < 2 * PI) // 2pi is the total period ie. a perfect round
             drawAll (renderer, phasors, time);
         ////////////////////
-        time += 2 * PI / (max_freq + 1.);
+        time += 2 * PI / max_freq;
         // renders the prepared 'drawing buffer'
         SDL_RenderPresent (renderer);
 

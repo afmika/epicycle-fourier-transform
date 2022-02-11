@@ -15,7 +15,7 @@ std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples, bool do_sort)
     std::vector<Phasor> phasors ((size_t) N);
     // Cn = Sum [k = 1 .. N] {f[k] * exp(-i 2pi n k / N)}
     Complex Cn;
-    for (int n = 0; n < N; n++) {
+    for (int n = 1; n <= (int) N; n++) {
         Cn = 0; // reset previous
         for (int k = 0; k < N; k++) {
             double pchunk = ((double) n) * ((double) k) / ((double) N);
@@ -28,7 +28,7 @@ std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples, bool do_sort)
             Cn = Cn + func_samples[k] * tempZ;
         }
         Cn = Cn / N;
-        phasors[n] = {
+        phasors[n - 1] = {
             Cn.toPolar (),  // angle, amplitude data
             (double) n      // frequency 
         };
