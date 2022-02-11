@@ -37,6 +37,16 @@ void drawLine (SDL_Renderer *renderer, Complex a, Complex b) {
     SDL_RenderDrawLine (renderer, TX + a.x, TY + a.y, TX + b.x, TY + b.y);
 }
 
+void drawArrow (SDL_Renderer *renderer, Complex a, Complex b) {
+    double len = 5.;
+    drawLine (renderer, a, b);
+    Complex d = b - a;
+    Complex d1 = Polar(len, d.angle() - PI / 5.);
+    Complex d2 = Polar(len, d.angle() + PI / 5.);
+    drawLine (renderer, b - d1, b);
+    drawLine (renderer, b - d2, b);
+}
+
 void drawAll (SDL_Renderer *renderer, std::vector<Phasor> &phasors, double &t) {
     Complex tip;
 
@@ -46,7 +56,7 @@ void drawAll (SDL_Renderer *renderer, std::vector<Phasor> &phasors, double &t) {
         // Phasor currentAngle/amplitude + exp (i * f * t)
         Complex dz (phasor.stateAt (t));
         Complex next = tip + dz;
-        drawLine (renderer, tip, next);
+        drawArrow (renderer, tip, next);
         // drawCircle (renderer, tip, dz.amplitude()); // the center will be the previous tip
 
         tip = next; // update tip
