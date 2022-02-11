@@ -12,7 +12,7 @@ double FFT::integral (double (*fn) (double), double start, double end, double dt
 std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples, bool do_sort)
 {
     double N = func_samples.size();
-    std::vector<Phasor> phasors ((size_t) N);
+    std::vector<Phasor> phasors;
     // Cn = Sum [k = 1 .. N] {f[k] * exp(-i 2pi n k / N)}
     Complex Cn;
     for (int n = 1; n <= (int) N; n++) {
@@ -28,15 +28,15 @@ std::vector<Phasor> FFT::dft (std::vector<Complex> &func_samples, bool do_sort)
             Cn = Cn + func_samples[k] * tempZ;
         }
         Cn = Cn / N;
-        phasors[n - 1] = {
+        phasors.push_back({
             Cn.toPolar (),  // angle, amplitude data
             (double) n      // frequency 
-        };
+        });
     }
     
     if (do_sort) {
         std::sort (phasors.begin(), phasors.end(), [&] (auto a, auto b) {
-            return a.polar_data.amplitude < b.polar_data.amplitude;
+            return a.polar_data.amplitude > b.polar_data.amplitude;
         });
     }
 

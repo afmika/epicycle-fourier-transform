@@ -5,8 +5,6 @@ and may not be redistributed without written permission.*/
 #include "SDL.h"
 #include <iostream>
 #include <vector>
-#include <chrono>
-#include <ctime>
 
 #include "fourier/complex_number.h"
 #include "fourier/fft.h"
@@ -18,35 +16,53 @@ const double TY = 250;
 std::vector<Complex> points;
 
 void logInfo (std::string infos) {
-    std::cout << "\033\143";
+    // std::cout << "\033\143";
     std::cout << infos;
 }
 
-Complex computeTipAtTime ( std::vector<Phasor> &phasors, double &t)
-{
-    Complex tip;
-    for (auto &phasor : phasors) {
-        // it illustrates the fact that for t = 1s, we got f perfect rounds
-        // Phasor currentAngle/amplitude + exp (i * f * t)
-        Complex dz (phasor.stateAt (t));
-        tip = tip + dz; // overall sum
+void drawCircle (SDL_Renderer *renderer, Complex pos, double radius) {
+    if (((int) radius) <= 0) return;
+    double n = 20;
+    double t = 2. * PI / n;
+    Complex old = pos + radius;
+    for (int k = 1; k <= n; k++) {
+        // c * (cos t + i sin t) == rotation t rad
+        Complex next = pos + Complex(Polar (radius, k * t)); // rotate the current point
+        SDL_RenderDrawLine (renderer, TX + old.x, TY + old.y, TX + next.x, TY + next.y);
+        old = next;
     }
-    points.push_back (tip);
-    return tip;
+}
+
+void drawLine (SDL_Renderer *renderer, Complex a, Complex b) {
+    SDL_RenderDrawLine (renderer, TX + a.x, TY + a.y, TX + b.x, TY + b.y);
 }
 
 void drawAll (SDL_Renderer *renderer, std::vector<Phasor> &phasors, double &t) {
-    Complex tip = computeTipAtTime (phasors, t);
-    SDL_SetRenderDrawColor (renderer, 255, 0, 0, 255);
-    // draw the points
-    for (int i = 1, s = points.size(); i < s; i++) {
-        Complex oldp = points[i - 1], newp = points[i];
-        SDL_RenderDrawLine (renderer, TX + oldp.x, TY + oldp.y, TX + newp.x, TY + newp.y);
+    Complex tip;
+
+    SDL_SetRenderDrawColor (renderer, 0, 0, 0xFF, 0x28);
+    for (auto phasor : phasors) {
+        // it illustrates the fact that for t = 1s, we got f perfect rounds
+        // Phasor currentAngle/amplitude + exp (i * f * t)
+        Complex dz (phasor.stateAt (t));
+        Complex next = tip + dz;
+        drawLine (renderer, tip, next);
+        
+        drawCircle (renderer, tip, dz.amplitude()); // the center will be the previous tip
+
+        tip = next; // update tip
     }
+    points.push_back (tip);
+
+    // draw the computed points
+    SDL_SetRenderDrawColor (renderer, 0xFF, 0, 0, 0xFF);
+    for (int i = 1, s = points.size(); i < s; i++)
+        drawLine (renderer, points[i - 1], points[i]);
+    
     // Log
-    // char buffer[50];
-    // sprintf (buffer, "Time %.3f s | tip %s | n. points %d", time, tip.str().c_str(), points.size ());
-    // logInfo (buffer);
+    char buffer[50];
+    sprintf (buffer, "Time %.3f s | tip %s | n. points %d\n", t, tip.str().c_str(), points.size ());
+    logInfo (buffer);
 }
 
 int main (int argc, char** argv) {
@@ -55,7 +71,7 @@ int main (int argc, char** argv) {
 
     std::string file = "./datas/pansy-datas.txt";
     std::vector<Complex> samples = FFT::loadSamplesFromFile (file);
-    std::vector<Phasor> phasors = FFT::dft (samples, false);
+    std::vector<Phasor> phasors = FFT::dft (samples, true);
 
     // init SDL Video
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -70,10 +86,10 @@ int main (int argc, char** argv) {
     }
     
     renderer = SDL_CreateRenderer(window, -1, 0);
+
     bool animate = true;
-    auto t_start = std::chrono::high_resolution_clock::now();
     double time = 0.;
-    double max_freq = phasors[phasors.size () - 1].freq;
+    double max_freq = phasors[0].freq + 1.;
 
     while (animate) {
         SDL_Event event;
@@ -84,25 +100,19 @@ int main (int argc, char** argv) {
                 break;
         }
 
-        auto t_end = std::chrono::high_resolution_clock::now();
-        auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
-        t_start = t_end;
-
-        SDL_SetRenderDrawColor (renderer, 0xFF, 0xFF, 0xFF, 0xFF); // color for drawing
-        SDL_RenderClear (renderer); // clear the entire screen with our selected color
-
-        ////////////////////
-        if (time < 2 * PI) // 2pi is the total period ie. a perfect round
+        if (time < 2 * PI) { // period
+            SDL_SetRenderDrawBlendMode (renderer, SDL_BlendMode::SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor (renderer, 0xFF, 0xFF, 0xFF, 0xFF); // color for drawing
+            SDL_RenderClear (renderer); // clear the entire screen with our selected color
             drawAll (renderer, phasors, time);
-        ////////////////////
-        time += 2 * PI / max_freq;
-        // renders the prepared 'drawing buffer'
-        SDL_RenderPresent (renderer);
+            time += 2 * PI / max_freq;
+            SDL_RenderPresent (renderer);
+        }
 
-        SDL_Delay (1000 / 60);
+        SDL_Delay (1000 / 10);
     }
 
     SDL_DestroyWindow (window);
-    SDL_Quit();
+    SDL_Quit ();
 	return 0;
 }
