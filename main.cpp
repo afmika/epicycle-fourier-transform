@@ -26,7 +26,7 @@ void drawCircle (SDL_Renderer *renderer, Complex pos, double radius) {
     double t = 2. * PI / n;
     Complex old = pos + radius;
     for (int k = 1; k <= n; k++) {
-        // c * (cos t + i sin t) == rotation t rad
+        // (cos t + i sin t) == rotation t rad
         Complex next = pos + Complex(Polar (radius, k * t)); // rotate the current point
         SDL_RenderDrawLine (renderer, TX + old.x, TY + old.y, TX + next.x, TY + next.y);
         old = next;
@@ -47,8 +47,7 @@ void drawAll (SDL_Renderer *renderer, std::vector<Phasor> &phasors, double &t) {
         Complex dz (phasor.stateAt (t));
         Complex next = tip + dz;
         drawLine (renderer, tip, next);
-        
-        drawCircle (renderer, tip, dz.amplitude()); // the center will be the previous tip
+        // drawCircle (renderer, tip, dz.amplitude()); // the center will be the previous tip
 
         tip = next; // update tip
     }
