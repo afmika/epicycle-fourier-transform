@@ -46,13 +46,13 @@ void displayMath (std::vector<Phasor> &phasors) {
         // time * freq + polar_data.angle
         snprintf(
             buff1, sizeof(buff1), 
-            "%.2f * cos(%.2f * x + %.2f)", 
+            "%.2f * cos(2 * pi *%.2f * x + %.2f)", 
             amp, freq, angle
         );
 
         snprintf(
             buff2, sizeof(buff2), 
-            "%.2f * sin(%.2f * x + %.2f)", 
+            "%.2f * sin(2 * pi * %.2f * x + %.2f)", 
             amp, freq, angle
         );
 
