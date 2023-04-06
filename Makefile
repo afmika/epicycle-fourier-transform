@@ -1,5 +1,5 @@
-INCLUDE_PATHS = -ID:\Bibliotheques\SDL2-2.0.20\x86_64-w64-mingw32\include\SDL2
-LIBRARY_PATHS = -LD:\Bibliotheques\SDL2-2.0.20\x86_64-w64-mingw32\lib
+INCLUDE_PATHS = -ID:\Libs\x86_64-w64-mingw32\include\SDL2
+LIBRARY_PATHS = -LD:\Libs\x86_64-w64-mingw32\lib
 
 LINKER_FLAGS = -std=c++14 -lmingw32 -lSDL2main -lSDL2
 COMPILER_FLAGS = -w

@@ -57,7 +57,7 @@ void drawAll (SDL_Renderer *renderer, std::vector<Phasor> &phasors, double &t) {
         Complex dz (phasor.stateAt (t));
         Complex next = tip + dz;
         drawArrow (renderer, tip, next);
-        // drawCircle (renderer, tip, dz.amplitude()); // the center will be the previous tip
+        drawCircle (renderer, tip, dz.amplitude()); // the center will be the previous tip
 
         tip = next; // update tip
     }
@@ -69,7 +69,7 @@ void drawAll (SDL_Renderer *renderer, std::vector<Phasor> &phasors, double &t) {
         drawLine (renderer, points[i - 1], points[i]);
     
     // Log
-    char buffer[50];
+    static char buffer[100];
     sprintf (buffer, "Time %.3f s | tip %s | n. points %d\n", t, tip.str().c_str(), points.size ());
     logInfo (buffer);
 }
